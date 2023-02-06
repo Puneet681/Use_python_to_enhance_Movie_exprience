@@ -9,7 +9,7 @@ import time
 import psutil
 from zipfile import ZipFile
 
-box = (256,48,704,1019) #Android screen coordinates
+box = (760,100,1160,980) #Android screen coordinates
 
 try:
 	# Create a ZipFile Object and load sample.zip in it
@@ -56,7 +56,7 @@ st = time.time()
 orig_dir = os.getcwd()
 adb_dir = os.path.join(os.getcwd(), "scrcpy-win64")
 
-input('>> Press Enter to continue')
+# input('>> Press Enter to continue')
 
 while True:
 	#Reading frames from screen
@@ -68,6 +68,8 @@ while True:
 	et = time.time()
 	elapsed_time = et-st
 	elapsed_time = round(elapsed_time)
+
+	cv2.imshow('Screen', screen)
 
 	screen.shape
 	w = (screen.shape)[0]
@@ -90,3 +92,9 @@ while True:
 	for i in rgb_list:
 		print(i)
 	len(rgb_list)
+
+	run_status +=1
+	key = cv2.waitKey(1)
+	if key == ord("q"):
+		cv2.destroyAllWindows()
+		break
