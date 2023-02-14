@@ -1,3 +1,4 @@
+# currenty working
 import os
 import cv2
 import numpy as np
@@ -8,8 +9,13 @@ import imutils
 import time
 import psutil
 from zipfile import ZipFile
+from PIL import Image
+import time
+# import board
+# import neopixel
 
-box = (760,100,1160,980) #Android screen coordinates
+
+box = (196,146,1720,960)  #Android screen coordinates
 
 try:
 	# Create a ZipFile Object and load sample.zip in it
@@ -57,7 +63,10 @@ orig_dir = os.getcwd()
 adb_dir = os.path.join(os.getcwd(), "scrcpy-win64")
 
 # input('>> Press Enter to continue')
+# setting GPIO pin
+# pixels1 = neopixel.NeoPixel(board.D18, 55, brightness=1)
 
+time.sleep(5)
 while True:
 	#Reading frames from screen
 	screen = ImageGrab.grab(box)
@@ -69,32 +78,52 @@ while True:
 	elapsed_time = et-st
 	elapsed_time = round(elapsed_time)
 
-	cv2.imshow('Screen', screen)
-
 	screen.shape
 	w = (screen.shape)[0]
 	h = (screen.shape)[1]
 	print(screen.shape)
-	rgb_list= []
+
+	
+
+	loc_RGB= []
 	for i in range (0,h-1):
+		x = 0
+		y = i
 		B,G,R=screen[0,i]
-		rgb_list.append((B,G,R))
+		loc_RGB.append([(x,y),(R,G,B)])
 	for i in range (0,w-1):
+		x = i
+		y = h-1
 		B,G,R=screen[i,h-1]
-		rgb_list.append((B,G,R))
+		loc_RGB.append([(x,y),(R,G,B)])
 	for i in range (h-1,0,-1):
+		x = w-1
+		y = i
 		B,G,R=screen[w-1,i]
-		rgb_list.append((B,G,R))
+		loc_RGB.append([(x,y),(R,G,B)])
 	for i in range (w-1,0,-1):
+		x = i
+		y = 0
 		B,G,R=screen[i,0]
-		rgb_list.append((B,G,R))
+		loc_RGB.append([(x,y),(R,G,B)])
 
-	for i in rgb_list:
-		print(i)
-	len(rgb_list)
 
-	run_status +=1
-	key = cv2.waitKey(1)
-	if key == ord("q"):
-		cv2.destroyAllWindows()
-		break
+#  to test the if the RGB values nad there location is correct or not
+	size = (int(w),int(h))
+	img = Image.new('RGB',size)
+
+	data = img.load()
+	for i in loc_RGB:
+			# print(i)
+			x = i[0][0]
+			y = i[0][1]
+			R = i[1][0]
+			G = i[1][1]
+			B = i[1][2]
+			data[x,y] = (R,G,B)
+
+			# pixels1[i]=(R,G,B)
+
+	img.show()
+	break
+	# time.sleep(1.5)
